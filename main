@@ -1,0 +1,435 @@
+Option Explicit
+
+ 
+
+Sub Dc_to_Dc_Transfer()
+
+ 
+
+ 
+
+Dim last_row1, last_row2, last_row3, last_row4, x, y, z, a, last_row5, last_row6, last_row7, last_row8 As Long
+
+Dim ws1, ws2, ws3, ws4, ws5, ws6, ws7 As Worksheet
+
+Dim excess_dc_lookup, need_dc_lookup, excess_dc_lookup_2, need_dc_lookup_2, current_sku As Variant
+
+ 
+
+ 
+
+Application.DisplayAlerts = False
+
+Application.ScreenUpdating = False
+
+Application.DisplayStatusBar = False
+
+ 
+
+ 
+
+Set ws1 = ActiveWorkbook.Sheets("All Data")
+
+Set ws2 = ActiveWorkbook.Sheets("Current Article")
+
+Set ws3 = ActiveWorkbook.Sheets("Excess.Needs")
+
+Set ws4 = ActiveWorkbook.Sheets("Excess Data")
+
+Set ws7 = ActiveWorkbook.Sheets("Needs Data")
+
+Set ws5 = ActiveWorkbook.Sheets("Clean")
+
+Set ws6 = ActiveWorkbook.Sheets("articles")
+
+ 
+
+ 
+
+last_row5 = ws6.Range("a" & Rows.Count).End(xlUp).Row
+
+last_row6 = ws1.Range("a" & Rows.Count).End(xlUp).Row
+
+last_row7 = ws4.Range("a" & Rows.Count).End(xlUp).Row
+
+last_row8 = ws7.Range("a" & Rows.Count).End(xlUp).Row
+
+ 
+
+x = 2
+
+y = 1
+
+a = 1
+
+ 
+
+Do Until a > last_row5
+
+ 
+
+current_sku = ws6.Range("a" & a)
+
+ws1.Range("a1").AutoFilter field:=1, Criteria1:=current_sku
+
+ws1.Cells.Copy
+
+ws2.Range("a1").PasteSpecial
+
+ws1.Cells.Delete
+
+ws1.Rows("1:1").Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+
+ws1.Range("a1") = "article"
+
+ws1.Range("b1") = "Excess_DC"
+
+ws1.Range("c1") = "Need_DC"
+
+ws1.Range("d1") = "sum_of_needed"
+
+ws1.Range("e1") = "sum_of_excess"
+
+ws1.Range("f1") = "site_trans"
+
+ws1.Range("g1") = "miles"
+
+ws1.Sort.SortFields.Clear
+
+ws1.Sort.SortFields.Add2 Key:=Range("a1:a" & last_row6 + 1), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+
+ 
+
+ 
+
+        With ws1.Sort
+
+        .SetRange Range("A1:G" & last_row6 + 1)
+
+        .Header = xlYes
+
+        .MatchCase = False
+
+        .Orientation = xlTopToBottom
+
+        .SortMethod = xlPinYin
+
+        .Apply
+
+        End With
+
+ws4.Range("a1").AutoFilter field:=1, Criteria1:=current_sku
+
+ws4.Columns("A:C").Copy
+
+ws3.Range("a1").PasteSpecial
+
+ws4.Cells.Delete
+
+ws4.Rows("1:1").Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+
+ws4.Range("a1") = "article"
+
+ws4.Range("b1") = "Excess_DC"
+
+ws4.Range("c1") = "sum_of_excess"
+
+ws4.Sort.SortFields.Clear
+
+ws4.Sort.SortFields.Add2 Key:=Range("a1:a" & last_row7 + 1), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+
+        With ws4.Sort
+
+        .SetRange Range("A1:C" & last_row7 + 1)
+
+        .Header = xlYes
+
+        .MatchCase = False
+
+        .Orientation = xlTopToBottom
+
+        .SortMethod = xlPinYin
+
+        .Apply
+
+        End With
+
+ 
+
+ws7.Range("a1").AutoFilter field:=1, Criteria1:=current_sku
+
+ws7.Columns("A:C").Copy
+
+ws3.Range("g1").PasteSpecial
+
+ws7.Cells.Delete
+
+ws7.Rows("1:1").Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+
+ws7.Range("a1") = "article"
+
+ws7.Range("b1") = "Needs_DC"
+
+ws7.Range("c1") = "sum_of_needs"
+
+ws7.Sort.SortFields.Clear
+
+ws7.Sort.SortFields.Add2 Key:=Range("a1:a" & last_row8 + 1), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+
+        With ws4.Sort
+
+        .SetRange Range("A1:C" & last_row8 + 1)
+
+        .Header = xlYes
+
+        .MatchCase = False
+
+        .Orientation = xlTopToBottom
+
+        .SortMethod = xlPinYin
+
+        .Apply
+
+        End With
+
+ 
+
+last_row1 = ws2.Range("a" & Rows.Count).End(xlUp).Row
+
+last_row2 = ws3.Range("a" & Rows.Count).End(xlUp).Row
+
+last_row3 = ws3.Range("g" & Rows.Count).End(xlUp).Row
+
+last_row4 = ws5.Range("a" & Rows.Count).End(xlUp).Row
+
+ 
+
+With ws2
+
+    Columns("F:F").Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+
+    .Range("F1") = "Take"
+
+    .Range("I1") = "Rank"
+
+    .Sort.SortFields.Clear
+
+    .Sort.SortFields.Add2 Key:=Range("H1:H" & last_row1), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+
+ 
+
+ 
+
+        With ws2.Sort
+
+        .SetRange Range("A1:I" & last_row1)
+
+        .Header = xlYes
+
+        .MatchCase = False
+
+        .Orientation = xlTopToBottom
+
+        .SortMethod = xlPinYin
+
+        .Apply
+
+        End With
+
+    y = 1
+
+    Do Until x > last_row1
+
+        ws2.Range("I" & x) = y
+
+        y = y + 1
+
+        x = x + 1
+
+    Loop
+
+   
+
+    x = 2
+
+ 
+
+ 
+
+ 
+
+   
+
+    Do Until x > last_row1
+
+        excess_dc_lookup = ws2.Range("B" & x)
+
+        need_dc_lookup = ws2.Range("C" & x)
+
+        If ((Application.VLookup(excess_dc_lookup, ws3.Range("b2:c" & last_row2), 2, False) > 0) And (Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False) < 0) And ws2.Range("e" & x).Value <= Abs(ws2.Range("d" & x).Value)) Then ws2.Range("f" & x) = ws2.Range("e" & x)
+
+        If ((Application.VLookup(excess_dc_lookup, ws3.Range("b2:c" & last_row2), 2, False) > 0) And (Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False) < 0) And ws2.Range("e" & x).Value >= Abs(ws2.Range("d" & x).Value)) Then ws2.Range("f" & x) = Abs(ws2.Range("d" & x))
+
+        If ws2.Range("f" & x) + Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False) <= 0 Then ws2.Range("f" & x) = ws2.Range("f" & x) Else ws2.Range("f" & x) = ws2.Range("f" & x).Value + Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False)
+
+        If ws2.Range("e" & x) + Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False) > 0 Then ws2.Range("f" & x) = Abs((Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False))) Else ws2.Range("f" & x) = ws2.Range("f" & x)
+
+      
+
+        'If ((Application.VLookup(excess_dc_lookup, ws3.Range("b2:c" & last_row2), 2, False) > 0) And (Application.VLookup(need_dc_lookup, ws3.Range("h2:i" & last_row3), 2, False) < 0) And ws2.Range("e" & x).Value <= Abs(ws2.Range("d" & x).Value) And ws2.Range("e" & x) > Abs(Application.VLookup(ws.Range("c" & x), ws3.Range("h2:i" & last_row3), 2, False))) Then ws2.Range("f" & x) = ws2.Range("e" & x)
+
+       
+
+        z = 2
+
+        Do Until z > last_row2
+
+                excess_dc_lookup_2 = ws3.Range("B" & z)
+
+                ws3.Range("d" & z) = Application.IfError(Application.VLookup(excess_dc_lookup_2, ws2.Range("b2:f" & last_row1), 5, False), 0)
+
+                ws3.Range("e" & z) = ws3.Range("c" & z) - ws3.Range("d" & z)
+
+                ws3.Range("c" & z) = ws3.Range("e" & z)
+
+                ws3.Range("d" & z).ClearContents
+
+                ws3.Range("e" & z).ClearContents
+
+                z = z + 1
+
+        Loop
+
+                z = 2
+
+                Do Until z > last_row3
+
+                need_dc_lookup_2 = ws3.Range("H" & z)
+
+                ws3.Range("j" & z) = Application.IfError(Application.VLookup(need_dc_lookup_2, ws2.Range("c2:f" & last_row1), 4, False), 0)
+
+                ws3.Range("k" & z) = ws3.Range("i" & z) + ws3.Range("j" & z)
+
+                ws3.Range("i" & z) = ws3.Range("k" & z)
+
+                ws3.Range("j" & z).ClearContents
+
+                ws3.Range("k" & z).ClearContents
+
+                z = z + 1
+
+        Loop
+
+        Application.CutCopyMode = False
+
+        ws2.Rows(x).Copy
+
+        last_row4 = ws5.Range("a" & Rows.Count).End(xlUp).Row + 1
+
+        ws5.Rows(last_row4).PasteSpecial
+
+        ws2.Rows(x).Delete Shift:=xlUp
+
+        last_row1 = ws2.Range("a" & Rows.Count).End(xlUp).Row
+
+        'x = x + 1
+
+ 
+
+    Loop
+
+        
+
+End With
+
+ws5.Range("a1") = "article"
+
+ws5.Range("b1") = "Excess_DC"
+
+ws5.Range("c1") = "Need_DC"
+
+ws5.Range("d1") = "sum_of_needs"
+
+ws5.Range("e1") = "sum_of_excess"
+
+ws5.Range("f1") = "Take"
+
+ws5.Range("g1") = "site_trans"
+
+ws5.Range("h1") = "miles"
+
+ws5.Range("i1") = "Rank"
+
+ 
+
+a = a + 1
+
+ws5.Range("a1:I" & last_row4).AutoFilter field:=6, Criteria1:="=0", Operator:=xlOr, Criteria2:="="
+
+ws5.Cells.Delete
+
+ws5.Rows("1:1").Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+
+ws5.Range("a1") = "article"
+
+ws5.Range("b1") = "Excess_DC"
+
+ws5.Range("c1") = "Need_DC"
+
+ws5.Range("d1") = "sum_of_needs"
+
+ws5.Range("e1") = "sum_of_excess"
+
+ws5.Range("f1") = "Take"
+
+ws5.Range("g1") = "site_trans"
+
+ws5.Range("h1") = "miles"
+
+ws5.Range("i1") = "Rank"
+
+last_row4 = ws5.Range("a" & Rows.Count).End(xlUp).Row + 1
+
+ws5.Sort.SortFields.Clear
+
+ws5.Sort.SortFields.Add2 Key:=Range("a1:a" & last_row4 + 1), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+
+        With ws5.Sort
+
+        .SetRange Range("A1:I" & last_row4 + 1)
+
+        .Header = xlYes
+
+        .MatchCase = False
+
+        .Orientation = xlTopToBottom
+
+        .SortMethod = xlPinYin
+
+        .Apply
+
+        End With
+
+ 
+
+ws3.Cells.ClearContents
+
+ws2.Columns("a:i").ClearContents
+
+If a Mod 100 = 0 Then ActiveWorkbook.Save
+
+If a = last_row5 Then ActiveWorkbook.Save
+
+ 
+
+ 
+
+Loop
+
+Application.DisplayAlerts = True
+
+Application.ScreenUpdating = True
+
+Application.DisplayStatusBar = True
+
+End Sub
